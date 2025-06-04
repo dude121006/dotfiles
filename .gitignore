@@ -1,1 +1,6 @@
 tmux/plugins/*
+
+# Ignore all .ssh files except config
+.ssh/*
+!.ssh/config
+

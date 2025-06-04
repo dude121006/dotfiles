@@ -126,14 +126,17 @@ alias susp="systemctl suspend"
 alias rmp="rm"
 alias rm="trash-put"
 
+alias claer="clear"
+alias clr="clear"
+alias clea="clear"
+
 alias zshconf="nvim ~/.zshrc"
 alias conf="cd ~/.config/nvim"
+alias dots="cd ~/.dotfiles"
 
 alias Dev="cd ~/Dev"
 alias vi="nvim"
 alias ta="tmux a"
 alias tmux-save="tmux run-shell ~/.config/tmux/plugins/tmux-continuum/scripts/continuum_save.sh"
-alias clr="clear"
 
-alias activate="source .venv/bin/activate"
 
