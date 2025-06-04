@@ -1,0 +1,29 @@
+[MASTER]
+ignore=tests,migrations,venv,.venv,__pycache__
+jobs=2  # run 4 processes in parallel (adjust to your CPU cores)
+extension-pkg-allow-list=cv2
+
+[MESSAGES CONTROL]
+disable=
+    invalid-name,  ; invalid name
+    C0301,    line-too-long  ;
+    C0114,  ; missing module docstring
+    C0115,  ; missing class docstring
+    C0116,  ; missing function docstring
+    R0903,  ; too few public methods (useful to disable if you have many simple classes)
+    R1705,  ;  no-else-return
+    W0511,  ; fixme warnings
+    W0621,  ; redefined-outer-name
+
+[REPORTS]
+reports=no  # disable full report to speed up
+score=no    # disable score display
+
+[TYPECHECK]
+ignored-modules=some_heavy_module_you_dont_want_to_check
+
+[FORMAT]
+max-line-length=100  # adjust if you want
+
+[SIMILARITIES]
+min-similarity-lines=4
