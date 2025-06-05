@@ -102,3 +102,4 @@ vim.keymap.set("n", "zo", "zo", { noremap = true, desc = "Open fold" })
 vim.keymap.set("n", "za", "za", { noremap = true, desc = "Toggle fold" })
 vim.keymap.set("n", "zR", "zR", { noremap = true, desc = "Open all folds" })
 vim.keymap.set("n", "zM", "zM", { noremap = true, desc = "Close all folds" })
+

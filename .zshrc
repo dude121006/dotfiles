@@ -128,6 +128,7 @@ alias rm="trash-put"
 
 alias claer="clear"
 alias clr="clear"
+alias clar="clear"
 alias clea="clear"
 
 alias zshconf="nvim ~/.zshrc"
