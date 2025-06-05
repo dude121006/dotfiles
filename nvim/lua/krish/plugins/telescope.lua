@@ -6,6 +6,7 @@ return {
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		"nvim-tree/nvim-web-devicons",
 		"folke/todo-comments.nvim",
+		"nvim-telescope/telescope-dap.nvim",
 	},
 	config = function()
 		local telescope = require("telescope")
@@ -47,7 +48,7 @@ return {
 		keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
 		keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
 		keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
-		keymap.set("n", "<leader>fd", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "Find document symbols" })
+		keymap.set("n", "<leader>fl", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "Find document symbols" })
 
 		-- for cpp manual using cppman
 		keymap.set("n", "<leader>fm", function()
@@ -63,5 +64,16 @@ return {
 			"<cmd>Telescope current_buffer_fuzzy_find<cr>",
 			{ desc = "Current Buffer Fuzzy Find" }
 		)
+
+		--
+		--
+		-- Telescope dap
+		vim.keymap.set("n", "<leader>fdl", ":Telescope dap list_breakpoints<CR>", { desc = "Debug: List Breakpoints" })
+
+		-- Additional useful telescope-dap commands
+		vim.keymap.set("n", "<leader>fdc", ":Telescope dap commands<CR>", { desc = "Debug: Commands" })
+		vim.keymap.set("n", "<leader>fdC", ":Telescope dap configurations<CR>", { desc = "Debug: Configurations" })
+		vim.keymap.set("n", "<leader>fdv", ":Telescope dap variables<CR>", { desc = "Debug: Variables" })
+		vim.keymap.set("n", "<leader>fdf", ":Telescope dap frames<CR>", { desc = "Debug: Frames" })
 	end,
 }

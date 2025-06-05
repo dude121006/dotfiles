@@ -303,6 +303,22 @@ return {
 			vim.keymap.set("n", "<leader><leader>i", dap.step_into, { desc = "Debug: Into" })
 			vim.keymap.set("n", "<leader><leader>o", dap.step_out, { desc = "Debug: Out" })
 			vim.keymap.set("n", "<leader><leader>b", dap.toggle_breakpoint, { desc = "Debug: Breakpoint" })
+
+			--
+			--
+			-- Telescope dap
+			vim.keymap.set(
+				"n",
+				"<leader>fdl",
+				":Telescope dap list_breakpoints<CR>",
+				{ desc = "Debug: List Breakpoints" }
+			)
+
+			-- Additional useful telescope-dap commands
+			vim.keymap.set("n", "<leader>fdc", ":Telescope dap commands<CR>", { desc = "Debug: Commands" })
+			vim.keymap.set("n", "<leader>fdC", ":Telescope dap configurations<CR>", { desc = "Debug: Configurations" })
+			vim.keymap.set("n", "<leader>fdv", ":Telescope dap variables<CR>", { desc = "Debug: Variables" })
+			vim.keymap.set("n", "<leader>fdf", ":Telescope dap frames<CR>", { desc = "Debug: Frames" })
 		end,
 		-- --- Lazy Loading Configuration ---
 		-- Tell lazy.nvim to load this plugin when specific filetypes are opened
