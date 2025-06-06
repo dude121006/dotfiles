@@ -127,6 +127,7 @@ alias rmp="rm"
 alias rm="trash-put"
 
 alias claer="clear"
+alias cleawr="clear"
 alias clr="clear"
 alias clar="clear"
 alias clea="clear"

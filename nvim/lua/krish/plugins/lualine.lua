@@ -7,7 +7,8 @@ return {
 
 		-- local theme = "gruvbox-material" -- Change to desired theme
 		-- local theme = "catp" -- Change to desired theme
-		local theme = "rose-pine" -- Change to desired theme
+		-- local theme = "rose-pine" -- Change to desired theme
+		local theme = "kanagawa" -- Change to desired theme
 		local colors
 		local my_lualine_theme
 

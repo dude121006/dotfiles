@@ -26,7 +26,8 @@ require("krish.core")
 require("krish.lazy")
 
 -- Your existing colorscheme settings
-vim.cmd("colorscheme rose-pine-main")
+-- vim.cmd("colorscheme rose-pine-main")
+vim.cmd("colorscheme kanagawa-wave")
 
 -- Your existing LSP hover handler configuration
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
