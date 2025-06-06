@@ -14,6 +14,7 @@ disable=
     R1705,  ;  no-else-return
     W0511,  ; fixme warnings
     W0621,  ; redefined-outer-name
+    E0401   ; import-error
 
 [REPORTS]
 reports=no  # disable full report to speed up
