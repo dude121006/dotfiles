@@ -1,3 +1,4 @@
+local vim = vim
 -- krish/core/compile_run.lua
 
 -- 1. Create a module table (conventionally named `M`)
@@ -25,6 +26,10 @@ function M.compile_and_run()
 		cmd = string.format("bash %s", file)
 	elseif ext == "lua" then
 		cmd = string.format("lua %s", file)
+	elseif ext == "video" or ext == "webm" then
+		cmd = string.format("mpv %s", vim.fn.shellescape(file))
+		vim.fn.jobstart(cmd, { detach = true })
+		return
 	else
 		vim.notify("Unsupported filetype: " .. ext, vim.log.levels.WARN)
 		return

@@ -1,3 +1,4 @@
+local vim = vim
 -- Ensure global filetype detection is enabled.
 -- This is often handled by plugin managers like lazy.nvim, but good to be explicit.
 vim.cmd("filetype plugin indent on")
@@ -5,22 +6,52 @@ vim.cmd("filetype plugin indent on")
 -- Autocmd to explicitly set filetype for common image extensions.
 -- This runs *before* the buffer is read, ensuring the filetype is set early.
 vim.api.nvim_create_autocmd("BufReadPre", {
-	group = vim.api.nvim_create_augroup("MyImageFileType", { clear = true }),
-	pattern = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp", "*.bmp", "*.ico" },
+	group = vim.api.nvim_create_augroup("MyMediaFileType", { clear = true }),
+	pattern = {
+		-- Images
+		"*.jpg",
+		"*.jpeg",
+		"*.png",
+		"*.gif",
+		"*.webp",
+		"*.bmp",
+		"*.ico",
+		-- Videos
+		"*.mp4",
+		"*.webm",
+		"*.avi",
+		"*.mov",
+		"*.mkv",
+		"*.flv",
+		"*.wmv",
+		"*.m4v",
+	},
 	callback = function()
 		local filename = vim.fn.expand("<afile>")
 		local ext = filename:match("%.([^.]+)$") -- Extract file extension
 		if ext then
-			-- Set filetype based on the actual extension (e.g., 'jpeg' for .jpg/.jpeg, 'png' for .png)
-			if ext:lower() == "jpg" or ext:lower() == "jpeg" then
+			ext = ext:lower()
+			-- Video extensions
+			if
+				ext == "mp4"
+				or ext == "webm"
+				or ext == "avi"
+				or ext == "mov"
+				or ext == "mkv"
+				or ext == "flv"
+				or ext == "wmv"
+				or ext == "m4v"
+			then
+				vim.bo.filetype = "video"
+			-- Image extensions
+			elseif ext == "jpg" or ext == "jpeg" then
 				vim.bo.filetype = "jpeg"
 			else
-				vim.bo.filetype = ext:lower() -- For other image types like png, gif etc.
+				vim.bo.filetype = ext -- For other image types like png, gif etc.
 			end
 		end
 	end,
 })
-
 -- Your existing requires
 require("krish.core")
 require("krish.lazy")
