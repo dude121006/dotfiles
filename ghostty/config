@@ -3,5 +3,5 @@ theme = "Kanagawa Wave"
  
 font-feature = "+liga"
 font-family = "Liga SFMono Nerd Font"
-font-style = "Medium"
+font-style = "SemiBold"
 adjust-cell-height = 20%
