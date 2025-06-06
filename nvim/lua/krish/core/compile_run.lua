@@ -35,11 +35,10 @@ function M.compile_and_run()
 		return
 	end
 
-	local output = vim.fn.systemlist(cmd)
-
+	-- Create output buffer and window first
 	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
-	vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "", "[Press q to close]" })
+	local output_lines = {}
+
 	vim.api.nvim_buf_set_option(buf, "filetype", "output")
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 
@@ -56,13 +55,58 @@ function M.compile_and_run()
 		col = col,
 		style = "minimal",
 		border = "rounded",
-		focusable = true, -- <- important
+		focusable = true,
+	})
+
+	-- Start the job and stream output
+	vim.fn.jobstart(cmd, {
+		on_stdout = function(_, data)
+			if data then
+				-- Make buffer modifiable temporarily
+				vim.api.nvim_buf_set_option(buf, "modifiable", true)
+				for _, line in ipairs(data) do
+					if line ~= "" then
+						table.insert(output_lines, line)
+						vim.api.nvim_buf_set_lines(buf, -1, -1, false, { line })
+					end
+				end
+				-- Make buffer non-modifiable again
+				vim.api.nvim_buf_set_option(buf, "modifiable", false)
+			end
+		end,
+		on_stderr = function(_, data)
+			if data then
+				-- Make buffer modifiable temporarily
+				vim.api.nvim_buf_set_option(buf, "modifiable", true)
+				for _, line in ipairs(data) do
+					if line ~= "" then
+						table.insert(output_lines, "ERROR: " .. line)
+						vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "ERROR: " .. line })
+					end
+				end
+				-- Make buffer non-modifiable again
+				vim.api.nvim_buf_set_option(buf, "modifiable", false)
+			end
+		end,
+		on_exit = function(_, code)
+			-- Make buffer modifiable temporarily
+			vim.api.nvim_buf_set_option(buf, "modifiable", true)
+			vim.api.nvim_buf_set_lines(
+				buf,
+				-1,
+				-1,
+				false,
+				{ "", "[Process exited with code " .. code .. "]", "[Press q to close]" }
+			)
+			-- Make buffer non-modifiable again
+			vim.api.nvim_buf_set_option(buf, "modifiable", false)
+		end,
 	})
 
 	-- Close on `q`
 	vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = buf, nowait = true, silent = true })
 
-	-- Resize keys (keeping the debug checks we discussed, just in case)
+	-- Resize keys
 	local function resize_win(delta_w, delta_h)
 		if not vim.api.nvim_win_is_valid(win) then
 			vim.notify("Resize: window is invalid. ID: " .. tostring(win), vim.log.levels.INFO)
@@ -83,7 +127,7 @@ function M.compile_and_run()
 		end
 		config.width = math.max(10, config.width + delta_w)
 		config.height = math.max(5, config.height + delta_h)
-		vim.api.nvim_win_set_config(win, win_config) -- Fix: Should be 'win_config' or 'config' consistently
+		vim.api.nvim_win_set_config(win, config) -- Fixed: use 'config' not 'win_config'
 	end
 
 	vim.keymap.set("n", "<C-Up>", function()
