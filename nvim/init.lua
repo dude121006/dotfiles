@@ -25,6 +25,15 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 		"*.flv",
 		"*.wmv",
 		"*.m4v",
+		-- Audio
+		"*.mp3",
+		"*.wav",
+		"*.flac",
+		"*.aac",
+		"*.ogg",
+		"*.m4a",
+		"*.wma",
+		"*.opus",
 	},
 	callback = function()
 		local filename = vim.fn.expand("<afile>")
@@ -43,6 +52,18 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 				or ext == "m4v"
 			then
 				vim.bo.filetype = "video"
+			-- Audio extensions
+			elseif
+				ext == "mp3"
+				or ext == "wav"
+				or ext == "flac"
+				or ext == "aac"
+				or ext == "ogg"
+				or ext == "m4a"
+				or ext == "wma"
+				or ext == "opus"
+			then
+				vim.bo.filetype = "audio"
 			-- Image extensions
 			elseif ext == "jpg" or ext == "jpeg" then
 				vim.bo.filetype = "jpeg"
@@ -52,6 +73,7 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 		end
 	end,
 })
+
 -- Your existing requires
 require("krish.core")
 require("krish.lazy")

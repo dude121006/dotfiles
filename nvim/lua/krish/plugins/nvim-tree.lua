@@ -9,6 +9,8 @@ return {
 		vim.g.loaded_netrwPlugin = 1
 
 		nvimtree.setup({
+			sort_by = "extension",
+
 			view = {
 				width = 30,
 				relativenumber = false,

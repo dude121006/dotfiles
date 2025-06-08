@@ -1,41 +1,42 @@
 local vim = vim
--- krish/core/compile_run.lua
 
--- 1. Create a module table (conventionally named `M`)
 local M = {}
 
--- 2. Define your main function as a field of the module table.
---    Make sure the name here matches what your keymap expects: `compile_and_run`.
 function M.compile_and_run()
-	local ext = vim.fn.expand("%:e")
+	local original_ext = vim.fn.expand("%:e") -- Keep this for other specific extensions if needed
+	local current_filetype = vim.bo.filetype -- Get the current buffer's filetype (e.g., "audio", "video")
 	local file = vim.fn.expand("%:p")
 	local filename = vim.fn.expand("%:t:r")
 	local cmd = ""
 
-	if ext == "c" then
+	if original_ext == "c" then
 		cmd = string.format("gcc %s -o %s && ./%s", file, filename, filename)
-	elseif ext == "cpp" then
+	elseif original_ext == "cpp" then
 		cmd = string.format("g++ %s -o %s && ./%s", file, filename, filename)
-	elseif ext == "py" then
+	elseif original_ext == "py" then
 		cmd = string.format("python3 %s", file)
-	elseif ext == "java" then
+	elseif original_ext == "java" then
 		cmd = string.format("javac %s && java %s", file, filename)
-	elseif ext == "rs" then
+	elseif original_ext == "rs" then
 		cmd = string.format("rustc %s && ./%s", file, filename)
-	elseif ext == "sh" then
+	elseif original_ext == "sh" then
 		cmd = string.format("bash %s", file)
-	elseif ext == "lua" then
+	elseif original_ext == "lua" then
 		cmd = string.format("lua %s", file)
-	elseif ext == "video" or ext == "webm" then
+	elseif current_filetype == "video" then
 		cmd = string.format("mpv %s", vim.fn.shellescape(file))
 		vim.fn.jobstart(cmd, { detach = true })
 		return
+	elseif current_filetype == "audio" then
+		cmd = string.format("mpv %s", file)
 	else
-		vim.notify("Unsupported filetype: " .. ext, vim.log.levels.WARN)
+		vim.notify(
+			"Unsupported filetype: " .. original_ext .. " (Detected as: " .. current_filetype .. ")",
+			vim.log.levels.WARN
+		)
 		return
 	end
 
-	-- Create output buffer and window first
 	local buf = vim.api.nvim_create_buf(false, true)
 	local output_lines = {}
 
