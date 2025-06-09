@@ -1,5 +1,6 @@
 local vim = vim
 
+-- Create the module table
 local M = {}
 
 function M.compile_and_run()
@@ -28,7 +29,13 @@ function M.compile_and_run()
 		vim.fn.jobstart(cmd, { detach = true })
 		return
 	elseif current_filetype == "audio" then
-		cmd = string.format("mpv %s", file)
+		cmd = string.format("mpv %s", vim.fn.shellescape(file))
+		vim.fn.jobstart(cmd, { detach = true })
+		return
+	elseif current_filetype == "png" or current_filetype == "jpg" or current_filetype == "jpeg" then
+		cmd = string.format("mpv %s --keep-open --ontop", vim.fn.shellescape(file))
+		vim.fn.jobstart(cmd, { detach = true })
+		return
 	else
 		vim.notify(
 			"Unsupported filetype: " .. original_ext .. " (Detected as: " .. current_filetype .. ")",
@@ -39,6 +46,7 @@ function M.compile_and_run()
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	local output_lines = {}
+	local job_id = nil -- Store the job ID so we can kill it later
 
 	vim.api.nvim_buf_set_option(buf, "filetype", "output")
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
@@ -60,7 +68,7 @@ function M.compile_and_run()
 	})
 
 	-- Start the job and stream output
-	vim.fn.jobstart(cmd, {
+	job_id = vim.fn.jobstart(cmd, {
 		on_stdout = function(_, data)
 			if data then
 				-- Make buffer modifiable temporarily
@@ -104,8 +112,33 @@ function M.compile_and_run()
 		end,
 	})
 
-	-- Close on `q`
-	vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = buf, nowait = true, silent = true })
+	-- Function to close window and kill process if needed
+	local function close_and_cleanup()
+		-- Kill the job if it's still running
+		if job_id and vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+			vim.fn.jobstop(job_id)
+			vim.notify("Stopped running process (job ID: " .. job_id .. ")", vim.log.levels.INFO)
+		end
+		-- Close the window
+		if vim.api.nvim_win_is_valid(win) then
+			vim.api.nvim_win_close(win, true)
+		end
+	end
+
+	-- Close on `q` with cleanup
+	vim.keymap.set("n", "q", close_and_cleanup, { buffer = buf, nowait = true, silent = true })
+
+	-- Also cleanup when the window is closed by other means (like :q, <C-w>c, etc.)
+	vim.api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(win),
+		once = true,
+		callback = function()
+			if job_id and vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+				vim.fn.jobstop(job_id)
+				vim.notify("Stopped running process (job ID: " .. job_id .. ")", vim.log.levels.INFO)
+			end
+		end,
+	})
 
 	-- Resize keys
 	local function resize_win(delta_w, delta_h)
