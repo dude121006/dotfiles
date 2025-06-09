@@ -31,7 +31,7 @@ return {
 						end
 						return "python"
 					end,
-					args = { "-m", "black", "--stdin-filename", "$FILENAME", "--quiet", "-" },
+					args = { "-m", "black", "--stdin-filename", "$FILENAME", "--quiet", "--line-length", "120", "-" },
 					stdin = true,
 					timeout_ms = 8000,
 					-- Additional fixes for race conditions:
