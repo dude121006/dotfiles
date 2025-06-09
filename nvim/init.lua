@@ -67,6 +67,8 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 			-- Image extensions
 			elseif ext == "jpg" or ext == "jpeg" then
 				vim.bo.filetype = "jpeg"
+			elseif ext == "png" then
+				vim.bo.filetype = "png" -- For other image types like png, gif etc.
 			else
 				vim.bo.filetype = ext -- For other image types like png, gif etc.
 			end
